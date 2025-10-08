@@ -72,7 +72,63 @@ void display_products()
         cur = cur->next;
     }
 }
----Mansi--
+// cart item node holding a pointer to a product, its quantity, and a link to the next item for implementing a stack 
+typedef struct CartItem
+{
+    Product *product;
+    int qty;
+    struct CartItem *next;
+} CartItem;
+
+CartItem *cart_top = NULL;
+
+//to push items into the cart
+void push_cart(Product *p, int qty)
+{
+    CartItem *ci = (CartItem *)malloc(sizeof(CartItem));
+    ci->product = p;
+    ci->qty = qty;
+    ci->next = cart_top;
+    cart_top = ci;
+}
+
+//to remove items from the cart
+int pop_cart()
+{
+    if (!cart_top)
+        return 0;
+    CartItem *t = cart_top;
+    cart_top = cart_top->next;
+    free(t);
+    return 1;
+}
+
+//to display the items present in the cart
+void display_cart()
+{
+    if (!cart_top)
+    {
+        printf("\nCart is empty.\n");
+        return;
+    }
+    printf("\nYour Cart:\n");
+    printf("%-5s %-15s %-8s %-10s\n", "ID", "Name", "Qty", "Price");
+    printf("--------------------------------------\n");
+    CartItem *cur = cart_top;
+    while (cur)
+    {
+        printf("%-5d %-15s %-8d %-10.2lf\n",
+               cur->product->id, cur->product->name, cur->qty, cur->product->price);
+        cur = cur->next;
+    }
+}
+
+//clear cart
+void clear_cart()
+{
+    while (cart_top)
+        pop_cart();
+}
     
 //FIFO queue for checkout, where each node stores a product, quantity, and a pointer to the next item, and the queue tracks the front and rear nodes
 typedef struct QNode
@@ -432,6 +488,7 @@ int main()
     }
     return 0;
 }
+
 
 
 

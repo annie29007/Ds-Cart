@@ -32,8 +32,46 @@ Product *create_product(int id, const char *name, const char *cat, double price,
     p->prev = p->next = NULL;
     return p;
 }
+    void append_product(Product *node)
+{
+    if (!product_head)
+    {
+        product_head = node;
+        return;
+    }
+    Product *cur = product_head;
+    while (cur->next)
+        cur = cur->next;
+    cur->next = node;
+    node->prev = cur;
+}
 
---Simran--
+//to find products by their id
+Product *find_product_by_id(int id)
+{
+    Product *cur = product_head;
+    while (cur)
+    {
+        if (cur->id == id)
+            return cur;
+        cur = cur->next;
+    }
+    return NULL;
+}
+
+//to display the products(Name,Id,Category,Price,stock)
+void display_products()
+{
+    printf("\n%-5s %-15s %-12s %-10s %-8s\n", "ID", "Name", "Category", "Price", "Stock");
+    printf("-------------------------------------------------------------\n");
+    Product *cur = product_head;
+    while (cur)
+    {
+        printf("%-5d %-15s %-12s %-10.2lf %-8d\n",
+               cur->id, cur->name, cur->category, cur->price, cur->stock);
+        cur = cur->next;
+    }
+}
 ---Mansi--
 --Tammana--
 /* -------------------- File Handling -------------------- */
@@ -326,5 +364,6 @@ int main()
     }
     return 0;
 }
+
 
 

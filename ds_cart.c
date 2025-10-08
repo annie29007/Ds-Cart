@@ -73,7 +73,75 @@ void display_products()
     }
 }
 ---Mansi--
---Tammana--
+    
+//FIFO queue for checkout, where each node stores a product, quantity, and a pointer to the next item, and the queue tracks the front and rear nodes
+typedef struct QNode
+{
+    Product *product;
+    int qty;
+    struct QNode *next;
+} QNode;
+
+typedef struct Queue
+{
+    QNode *front, *rear;
+} Queue;
+
+void init_queue(Queue *q) { q->front = q->rear = NULL; }
+
+void enqueue(Queue *q, Product *p, int qty)
+{
+    QNode *n = (QNode *)malloc(sizeof(QNode));
+    n->product = p;
+    n->qty = qty;
+    n->next = NULL;
+    if (!q->rear)
+    {
+        q->front = q->rear = n;
+        return;
+    }
+    q->rear->next = n;
+    q->rear = n;
+}
+
+int dequeue(Queue *q, Product **p, int *qty)
+{
+    if (!q->front)
+        return 0;
+    QNode *t = q->front;
+    *p = t->product;
+    *qty = t->qty;
+    q->front = q->front->next;
+    if (!q->front)
+        q->rear = NULL;
+    free(t);
+    return 1;
+}
+
+void cart_to_queue(Queue *q)
+{
+    init_queue(q);
+    CartItem *cur = cart_top;
+    int n = 0;
+    while (cur)
+    {
+        n++;
+        cur = cur->next;
+    }
+    if (n == 0)
+        return;
+    CartItem **arr = malloc(sizeof(CartItem *) * n);
+    cur = cart_top;
+    for (int i = 0; i < n; i++)
+    {
+        arr[i] = cur;
+        cur = cur->next;
+    }
+    for (int i = n - 1; i >= 0; i--)
+        enqueue(q, arr[i]->product, arr[i]->qty);
+    free(arr);
+}
+    
 /* -------------------- File Handling -------------------- */
 int registerUser(const char *u, const char *p)
 {
@@ -364,6 +432,7 @@ int main()
     }
     return 0;
 }
+
 
 
 

@@ -7,7 +7,7 @@
 #define BILL_FILE "bills.txt"
 #define ADMIN_PASS "admin123"
 
-/* -------------------- Product (Doubly Linked List) -------------------- */
+//defining the structure Product
 typedef struct Product
 {
     int id;
@@ -20,7 +20,7 @@ typedef struct Product
 
 Product *product_head = NULL;
 
-/* Create and append product */
+//function to create product
 Product *create_product(int id, const char *name, const char *cat, double price, int stock)
 {
     Product *p = (Product *)malloc(sizeof(Product));
@@ -33,6 +33,7 @@ Product *create_product(int id, const char *name, const char *cat, double price,
     return p;
 }
 
+//Adds a new product node at the end of the doubly linked list.
 void append_product(Product *node)
 {
     if (!product_head)
@@ -47,6 +48,7 @@ void append_product(Product *node)
     node->prev = cur;
 }
 
+//to find products by their id
 Product *find_product_by_id(int id)
 {
     Product *cur = product_head;
@@ -59,6 +61,7 @@ Product *find_product_by_id(int id)
     return NULL;
 }
 
+//to display the products(Name,Id,Category,Price,stock)
 void display_products()
 {
     printf("\n%-5s %-15s %-12s %-10s %-8s\n", "ID", "Name", "Category", "Price", "Stock");
@@ -72,7 +75,7 @@ void display_products()
     }
 }
 
-/* -------------------- Stack (Cart) -------------------- */
+// cart item node holding a pointer to a product, its quantity, and a link to the next item for implementing a stack 
 typedef struct CartItem
 {
     Product *product;
@@ -82,6 +85,7 @@ typedef struct CartItem
 
 CartItem *cart_top = NULL;
 
+//to push items into the cart
 void push_cart(Product *p, int qty)
 {
     CartItem *ci = (CartItem *)malloc(sizeof(CartItem));
@@ -91,6 +95,7 @@ void push_cart(Product *p, int qty)
     cart_top = ci;
 }
 
+//to remove items from the cart
 int pop_cart()
 {
     if (!cart_top)
@@ -101,6 +106,7 @@ int pop_cart()
     return 1;
 }
 
+//to display the items present in the cart
 void display_cart()
 {
     if (!cart_top)
@@ -120,13 +126,14 @@ void display_cart()
     }
 }
 
+//clear cart
 void clear_cart()
 {
     while (cart_top)
         pop_cart();
 }
 
-/* -------------------- Queue (Checkout) -------------------- */
+//FIFO queue for checkout, where each node stores a product, quantity, and a pointer to the next item, and the queue tracks the front and rear nodes.
 typedef struct QNode
 {
     Product *product;
@@ -204,7 +211,7 @@ int registerUser(const char *u, const char *p)
     fclose(f);
     return 1;
 }
-
+//user login
 int loginUser(const char *u, const char *p)
 {
     FILE *f = fopen(USER_FILE, "r");
@@ -224,6 +231,7 @@ int loginUser(const char *u, const char *p)
     return ok;
 }
 
+//billing
 void save_bill(const char *user, double total, Queue *q)
 {
     FILE *f = fopen(BILL_FILE, "a");
@@ -245,7 +253,6 @@ void save_bill(const char *user, double total, Queue *q)
     fclose(f);
 }
 
-/* -------------------- Input Helpers -------------------- */
 void input_str(const char *prompt, char *buf, int size)
 {
     printf("%s", prompt);
@@ -264,7 +271,7 @@ int input_int(const char *prompt)
     return atoi(buf);
 }
 
-/* -------------------- Sample Products -------------------- */
+//sample products
 void load_sample_products()
 {
     append_product(create_product(101, "Pen", "Stationery", 10.0, 100));
@@ -274,7 +281,7 @@ void load_sample_products()
     append_product(create_product(105, "Mouse", "Electronics", 799.0, 30));
 }
 
-/* -------------------- Checkout -------------------- */
+//checkout-will show the total bill&items present
 void process_checkout(const char *user)
 {
     if (!cart_top)
@@ -308,7 +315,7 @@ void process_checkout(const char *user)
     printf("Bill saved. Thank you for shopping with DS Cart!\n");
 }
 
-/* -------------------- Menus -------------------- */
+//user menu-what the user sees 
 void user_menu(const char *username)
 {
     while (1)
@@ -357,6 +364,7 @@ void user_menu(const char *username)
     }
 }
 
+//admin's menu-what the admin sees & what operations it can perform
 void admin_menu()
 {
     char pass[64];
@@ -432,7 +440,7 @@ void admin_menu()
     }
 }
 
-/* -------------------- Main -------------------- */
+//main
 int main()
 {
     printf("===== Welcome to DS Cart =====\n");
@@ -483,3 +491,4 @@ int main()
     }
     return 0;
 }
+
